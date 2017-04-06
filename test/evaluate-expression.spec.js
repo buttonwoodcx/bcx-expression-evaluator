@@ -15,6 +15,7 @@ test('evaluateExpression: evaluates', t => {
 test('evaluateExpression: evaluates special context variable $this', t => {
   t.deepEqual(evaluateExpression('$this', {a:2}), {a:2});
   t.equal(evaluateExpression('$this', 3), 3);
+  t.equal(evaluateExpression('$this.a', {a:2}), 2);
   t.end();
 });
 

@@ -5,7 +5,7 @@ import uglify from 'rollup-plugin-uglify';
 export default {
   entry: 'src/index.js',
   format: 'umd',
-  moduleName: 'ExpressionEvaluator',
+  moduleName: 'BcxExpressionEvaluator',
   dest: 'dist/index.js',
   external: [],
   globals: {},
