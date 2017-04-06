@@ -52,3 +52,10 @@ test('evaluateExpression: has no access to global javascript variables', t => {
 
   t.end();
 });
+
+test('evaluateExpression: can reject assignment', t => {
+  t.throws(() => evaluateExpression('a=1', {a:0}, null, {rejectAssignment: true}));
+  t.throws(() => evaluateExpression('b&&(a=1)', {a:0}, null, {rejectAssignment: true}));
+  t.throws(() => evaluateExpression('b&&(c||(a=1))', {a:0}, null, {rejectAssignment: true}));
+  t.end();
+});

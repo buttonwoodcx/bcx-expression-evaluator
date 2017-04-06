@@ -15,16 +15,18 @@ export class Parser {
     this.lexer = new Lexer();
   }
 
-  parse(input) {
+  parse(input, opts = {}) {
     input = input || '';
+    const rejectAssignment = opts.rejectAssignment || false;
 
     return this.cache[input]
-      || (this.cache[input] = new ParserImplementation(this.lexer, input).parseExpression());
+      || (this.cache[input] = new ParserImplementation(this.lexer, input, {rejectAssignment}).parseExpression());
   }
 }
 
 export class ParserImplementation {
-  constructor(lexer, input) {
+  constructor(lexer, input, opts = {}) {
+    this.rejectAssignment = opts.rejectAssignment || false;
     this.index = 0;
     this.input = input;
     this.tokens = lexer.lex(input);
@@ -39,6 +41,10 @@ export class ParserImplementation {
     let result = this.parseConditional();
 
     while (this.peek.text === '=') {
+      if (this.rejectAssignment) {
+        this.error('assignment is not allowed');
+      }
+
       if (!result.isAssignable) {
         let end = (this.index < this.tokens.length) ? this.peek.index : this.input.length;
         let expression = this.input.substring(start, end);

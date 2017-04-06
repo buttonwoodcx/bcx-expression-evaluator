@@ -235,17 +235,24 @@ test('Parser: parses es6 shorthand LiteralObject', t => {
 });
 
 test('Parser: does not parse invalid shorthand properties', t => {
-    let pass = false;
-    try {
-        parser.parse('{ foo.bar, bar.baz }');
-        pass = true;
-    } catch (e) { pass = false; }
-    t.equal(pass, false);
+  let pass = false;
+  try {
+    parser.parse('{ foo.bar, bar.baz }');
+    pass = true;
+  } catch (e) { pass = false; }
+  t.equal(pass, false);
 
-    try {
-        parser.parse('{ "foo.bar" }');
-        pass = true;
-    } catch (e) { pass = false; }
-    t.equal(pass, false);
+  try {
+    parser.parse('{ "foo.bar" }');
+    pass = true;
+  } catch (e) { pass = false; }
+  t.equal(pass, false);
+  t.end();
+});
+
+test('Parser: can reject assignment', t => {
+  t.throws(() => parser.parse('a=1', {rejectAssignment: true}));
+  t.throws(() => parser.parse('b&&(a=1)', {rejectAssignment: true}));
+  t.throws(() => parser.parse('b&&(c||(a=1))', {rejectAssignment: true}));
   t.end();
 });
