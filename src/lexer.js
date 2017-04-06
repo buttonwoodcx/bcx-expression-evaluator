@@ -360,6 +360,7 @@ const $BACKSLASH = 92;
 const $RBRACKET = 93;
 const $CARET = 94;
 const $_ = 95;
+const $BACKTICK = 96;
 
 const $a = 97;
 const $e = 101;

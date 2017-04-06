@@ -12,8 +12,9 @@ test('Unparser: should unparse', t => {
     '[a,b,c]',
     'foo',
     // https://github.com/aurelia/binding/issues/586
-    //'a||(b&&c)',
-    //'a&&(b=1)',
+    // 'a&&(b||c)',
+    // 'a&&(b=1)',
+    // '2*(2+3)',
   ];
   let i = expressions.length;
   while (i--) {
