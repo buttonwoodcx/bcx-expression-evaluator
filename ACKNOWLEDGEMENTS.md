@@ -1,4 +1,4 @@
-The expression parser was mainly extracted from [aurelia-binding](https://github.com/aurelia/binding), itself is a highly altered JS port of the Angular Dart parser.
+The tool was mainly extracted, and slightly modified from the expression parser of [aurelia-binding](https://github.com/aurelia/binding), which itself is a highly altered JS port of the Angular Dart parser.
 
 Below are required notices from the two projects.
 
