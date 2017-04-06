@@ -1,0 +1,8 @@
+# Nodejs
+node_modules/
+npm-debug.*
+
+dist/
+
+# Mac OS X
+.DS_Store

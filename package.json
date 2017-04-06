@@ -1,0 +1,18 @@
+{
+  "name": "bcx-expression-evaluator",
+  "version": "0.1.0",
+  "devDependencies": {
+    "babel-eslint": "^7.2.1",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "babelify": "^7.3.0",
+    "eslint": "^3.19.0",
+    "rollup": "^0.41.6",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^1.0.1",
+    "tape": "^4.6.3"
+  },
+  "scripts": {
+    "build": "rollup -c"
+  }
+}

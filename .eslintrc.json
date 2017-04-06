@@ -1,0 +1,32 @@
+{
+  "parser": "babel-eslint",
+  "ecmaFeatures": {
+    "arrowFunctions": true,
+    "blockBindings": true,
+    "classes": true,
+    "defaultParams": true,
+    "destructuring": true,
+    "forOf": true,
+    "generators": false,
+    "modules": true,
+    "objectLiteralComputedProperties": true,
+    "objectLiteralDuplicateProperties": false,
+    "objectLiteralShorthandMethods": true,
+    "objectLiteralShorthandProperties": true,
+    "spread": true,
+    "superInFunctions": true,
+    "templateStrings": true,
+    "jsx": false
+  },
+  "rules": {
+    "semi": [2, "always"],
+    "no-undef": 2
+  },
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": false
+  },
+  "globals": {
+  }
+}
