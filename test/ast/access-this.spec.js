@@ -6,7 +6,7 @@ let $parent = new AccessThis(1);
 let $parent$parent = new AccessThis(2);
 let $parent$parent$parent = new AccessThis(3);
 
-test('evaluates undefined bindingContext', t => {
+test('AST:AccessThis: evaluates undefined bindingContext', t => {
   let coc = createOverrideContext;
 
   let scope = { overrideContext: coc(undefined) };
@@ -31,7 +31,7 @@ test('evaluates undefined bindingContext', t => {
   t.end();
 });
 
-test('evaluates null bindingContext', t => {
+test('AST:AccessThis: evaluates null bindingContext', t => {
   let coc = createOverrideContext;
 
   let scope = { overrideContext: coc(null) };
@@ -56,7 +56,7 @@ test('evaluates null bindingContext', t => {
   t.end();
 });
 
-test('evaluates defined bindingContext', t => {
+test('AST:AccessThis: evaluates defined bindingContext', t => {
   let coc = createOverrideContext;
   let a = { a: 'a' };
   let b = { b: 'b' };

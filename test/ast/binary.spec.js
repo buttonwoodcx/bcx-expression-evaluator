@@ -2,7 +2,7 @@ import {Binary, LiteralString, LiteralPrimitive} from '../../src/ast';
 import {createSimpleScope} from '../../src/scope';
 import test from 'tape';
 
-test('concats strings', t => {
+test('AST:Binary: concats strings', t => {
   let expression = new Binary('+', new LiteralString('a'), new LiteralString('b'));
   let scope = createSimpleScope({});
   t.equal(expression.evaluate(scope), 'ab');
@@ -25,7 +25,7 @@ test('concats strings', t => {
   t.end();
 });
 
-test('adds numbers', t => {
+test('AST:Binary: adds numbers', t => {
   let expression = new Binary('+', new LiteralPrimitive(1), new LiteralPrimitive(2));
   let scope = createSimpleScope({});
   t.equal(expression.evaluate(scope), 3);
