@@ -19,8 +19,21 @@ export class Parser {
     input = input || '';
     const rejectAssignment = opts.rejectAssignment || false;
 
-    return this.cache[input]
-      || (this.cache[input] = new ParserImplementation(this.lexer, input, {rejectAssignment}).parseExpression());
+    if (!this.cache[input]) {
+      const parserImp = new ParserImplementation(this.lexer, input, {rejectAssignment});
+      this.cache[input] = parserImp.parseExpression();
+
+      let exp = '';
+      for (let i = 0, length = parserImp.tokens.length; i < length; ++i) {
+        exp += parserImp.tokens[i].text;
+      }
+
+      this.cache[input].toString = function() {
+        return exp;
+      };
+    }
+
+    return this.cache[input];
   }
 }
 
