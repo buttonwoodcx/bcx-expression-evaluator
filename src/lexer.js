@@ -46,77 +46,111 @@ export class Scanner {
     this.peek = 0;
     this.index = -1;
 
+    // inStringInterpolation
+    // 0: out of string interpolation
+    // 1: in string interpolation's string part
+    // 2: in string interpolation's interpolation part
+    // 3: in nested string interpolation's string part
+    // 4: in nested string interpolation's interpolation part
+    // 5 to Infinity: nested... odd means string part, even means interpolation part
+    this.inStringInterpolation = 0;
+
     this.advance();
   }
 
   scanToken() {
-    // Skip whitespace.
-    while (this.peek <= $SPACE) {
-      if (++this.index >= this.length) {
-        this.peek = $EOF;
-        return null;
-      }
-
-      this.peek = this.input.charCodeAt(this.index);
-    }
-
-    // Handle identifiers and numbers.
-    if (isIdentifierStart(this.peek)) {
-      return this.scanIdentifier();
-    }
-
-    if (isDigit(this.peek)) {
-      return this.scanNumber(this.index);
-    }
-
     let start = this.index;
 
-    switch (this.peek) {
-    case $PERIOD:
-      this.advance();
-      return isDigit(this.peek) ? this.scanNumber(start) : new Token(start, '.');
-    case $LPAREN:
-    case $RPAREN:
-    case $LBRACE:
-    case $RBRACE:
-    case $LBRACKET:
-    case $RBRACKET:
-    case $COMMA:
-    case $COLON:
-    case $SEMICOLON:
-      return this.scanCharacter(start, String.fromCharCode(this.peek));
-    case $SQ:
-    case $DQ:
-      return this.scanString();
-    case $PLUS:
-    case $MINUS:
-    case $STAR:
-    case $SLASH:
-    case $PERCENT:
-    case $CARET:
-    case $QUESTION:
-      return this.scanOperator(start, String.fromCharCode(this.peek));
-    case $LT:
-    case $GT:
-    case $BANG:
-    case $EQ:
-      return this.scanComplexOperator(start, $EQ, String.fromCharCode(this.peek), '=');
-    case $AMPERSAND:
-      return this.scanComplexOperator(start, $AMPERSAND, '&', '&');
-    case $BAR:
-      return this.scanComplexOperator(start, $BAR, '|', '|');
-    case $NBSP:
-      while (isWhitespace(this.peek)) {
-        this.advance();
+    if (this.inStringInterpolation % 2 === 0) {
+      // normal mode, at least not in string part
+
+      // Skip whitespace.
+      while (this.peek <= $SPACE) {
+        if (++this.index >= this.length) {
+          this.peek = $EOF;
+          return null;
+        }
+
+        this.peek = this.input.charCodeAt(this.index);
       }
 
-      return this.scanToken();
-      // no default
+      // Handle identifiers and numbers.
+      if (isIdentifierStart(this.peek)) {
+        return this.scanIdentifier();
+      }
+
+      if (isDigit(this.peek)) {
+        return this.scanNumber(this.index);
+      }
+
+      switch (this.peek) {
+      case $PERIOD:
+        this.advance();
+        return isDigit(this.peek) ? this.scanNumber(start) : new Token(start, '.');
+      case $RBRACE:
+        if (this.inStringInterpolation > 0) {
+          // return from interpolation part to string part.
+          this.inStringInterpolation -= 1;
+        } // fall through
+      case $LPAREN:
+      case $RPAREN:
+      case $LBRACE:
+      case $LBRACKET:
+      case $RBRACKET:
+      case $COMMA:
+      case $COLON:
+      case $SEMICOLON:
+        return this.scanCharacter(start, String.fromCharCode(this.peek));
+      case $SQ:
+      case $DQ:
+        return this.scanString();
+      case $PLUS:
+      case $MINUS:
+      case $STAR:
+      case $SLASH:
+      case $PERCENT:
+      case $CARET:
+      case $QUESTION:
+        return this.scanOperator(start, String.fromCharCode(this.peek));
+      case $LT:
+      case $GT:
+      case $BANG:
+      case $EQ:
+        return this.scanComplexOperator(start, $EQ, String.fromCharCode(this.peek), '=');
+      case $AMPERSAND:
+        return this.scanComplexOperator(start, $AMPERSAND, '&', '&');
+      case $BAR:
+        return this.scanComplexOperator(start, $BAR, '|', '|');
+      case $BACKTICK:
+        this.inStringInterpolation += 1;
+        return this.scanCharacter(start, String.fromCharCode(this.peek));
+      case $NBSP:
+        while (isWhitespace(this.peek)) {
+          this.advance();
+        }
+
+        return this.scanToken();
+        // no default
+      }
+
+      let character = String.fromCharCode(this.peek);
+      this.error(`Unexpected character [${character}]`);
+      return null;
+    } else {
+      // in string interpolation's string part
+      if (this.peek === $BACKTICK) {
+        this.inStringInterpolation -= 1;
+        return this.scanCharacter(start, String.fromCharCode(this.peek));
+      } else if (this.isStartOfInterpolation()) {
+        const token = this.scanStartOfInterpolation();
+        this.inStringInterpolation += 1;
+        return token;
+      } else {
+        return this.scanString();
+      }
     }
 
-    let character = String.fromCharCode(this.peek);
-    this.error(`Unexpected character [${character}]`);
-    return null;
+
   }
 
   scanCharacter(start, text) {
@@ -212,17 +246,24 @@ export class Scanner {
   }
 
   scanString() {
-    assert(this.peek === $SQ || this.peek === $DQ);
+    if (this.inStringInterpolation % 2 === 0) {
+      assert(this.peek === $SQ || this.peek === $DQ);
+    }
 
     let start = this.index;
-    let quote = this.peek;
+    let quote;
 
-    this.advance();  // Skip initial quote.
+    if (this.inStringInterpolation % 2 === 0) {
+      quote = this.peek;
+      this.advance();  // Skip initial quote.
+    } else {
+      quote = $BACKTICK;
+    }
 
     let buffer;
     let marker = this.index;
 
-    while (this.peek !== quote) {
+    while (this.peek !== quote && !this.isStartOfInterpolation()) {
       if (this.peek === $BACKSLASH) {
         if (!buffer) {
           buffer = [];
@@ -262,7 +303,11 @@ export class Scanner {
     }
 
     let last = this.input.substring(marker, this.index);
-    this.advance();  // Skip terminating quote.
+
+    if (this.inStringInterpolation % 2 === 0) {
+      this.advance();  // Skip terminating quote.
+    }
+
     let text = this.input.substring(start, this.index);
 
     // Compute the unescaped string value.
@@ -274,6 +319,14 @@ export class Scanner {
     }
 
     return new Token(start, text).withValue(unescaped);
+  }
+
+  scanStartOfInterpolation() {
+    assert(this.inStringInterpolation % 2 === 1);
+    assert(this.isStartOfInterpolation());
+    this.advance();
+    this.advance();
+    return new Token(this.index, '${');
   }
 
   advance() {
@@ -289,6 +342,10 @@ export class Scanner {
     // the error expectations in the lexer tests for numbers with exponents.
     let position = this.index + offset;
     throw new Error(`Lexer Error: ${message} at column ${position} in expression [${this.input}]`);
+  }
+
+  isStartOfInterpolation() {
+    return this.peek === $$ && this.input.charCodeAt(this.index + 1) === $LBRACE;
   }
 }
 
