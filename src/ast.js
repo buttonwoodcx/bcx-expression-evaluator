@@ -403,6 +403,29 @@ export class LiteralObject extends Expression {
   }
 }
 
+export class StringInterpolation extends Expression {
+  constructor(parts) {
+    super();
+
+    this.parts = parts;
+  }
+
+  evaluate(scope) {
+    let parts = this.parts;
+    let result = '';
+
+    for (let i = 0, length = parts.length; i < length; ++i) {
+      result += parts[i].evaluate(scope);
+    }
+
+    return result;
+  }
+
+  accept(visitor) {
+    return visitor.visitStringInterpolation(this);
+  }
+}
+
 /// Evaluate the [list] in context of the [scope].
 function evalList(scope, list) {
   const length = list.length;

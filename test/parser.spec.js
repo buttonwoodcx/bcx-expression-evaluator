@@ -11,9 +11,12 @@ import {
   CallFunction,
   AccessThis,
   AccessAncestor,
-  Assign
+  Assign,
+  StringInterpolation
 } from '../src/ast';
+import {createSimpleScope} from '../src/scope';
 import test from 'tape';
+
 
 let parser = new Parser();
 
@@ -247,6 +250,33 @@ test('Parser: does not parse invalid shorthand properties', t => {
     pass = true;
   } catch (e) { pass = false; }
   t.equal(pass, false);
+  t.end();
+});
+
+
+test('Parser: parses StringInterpolation', t => {
+  // simply test the evaluated result
+
+  t.equal(parser.parse('`\\``').evaluate(), '`');
+  t.equal(parser.parse('`2+2`').evaluate(), '2+2');
+  t.equal(parser.parse('`${2+2}`').evaluate(), '4');
+  t.equal(parser.parse('`\\${2+2}`').evaluate(), '${2+2}');
+  t.equal(parser.parse('`${1+1}$`').evaluate(), '2$');
+  t.equal(parser.parse('`${1+1} $ {`').evaluate(), '2 $ {');
+
+  t.throws(() => parser.parse('`${1+1}'));
+  t.throws(() => parser.parse('`${1+1 `'));
+  t.throws(() => parser.parse('`${1+1} ${`'));
+  t.throws(() => parser.parse('`${ 1 + 1 + `${` }`'));
+
+  let scope = createSimpleScope({a:1, b:'two'});
+
+  t.equal(parser.parse('true ? `#a${b}` : `#${a}b`').evaluate(scope), '#atwo');
+  t.equal(parser.parse('false ? `#a${b}` : `#${a}b`').evaluate(scope), '#1b');
+
+  // nested
+  t.equal(parser.parse('`${`1+1` + a}`').evaluate(scope), '1+11');
+  t.equal(parser.parse('`${`nested${1+1}`}`').evaluate(), 'nested2');
   t.end();
 });
 

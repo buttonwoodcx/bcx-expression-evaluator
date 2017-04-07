@@ -6,3 +6,6 @@ dist/
 
 # Mac OS X
 .DS_Store
+
+# my temporary test file
+/_test_.js

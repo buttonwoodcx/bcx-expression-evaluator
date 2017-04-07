@@ -150,4 +150,20 @@ export class Unparser {
     let escaped = literal.value.replace(/'/g, "\'");
     this.write(`'${escaped}'`);
   }
+
+  // TODO write to real `` form
+  visitStringInterpolation(stringInerpolation) {
+    let parts = stringInerpolation.parts;
+
+    this.write('(\'\'');
+
+    for (let i = 0, length = parts.length; i < length; ++i) {
+      let part = parts[i];
+      this.write('+(');
+      parts[i].accept(this);
+      this.write(')');
+    }
+
+    this.write(')');
+  }
 }

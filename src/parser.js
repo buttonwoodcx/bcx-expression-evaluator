@@ -4,7 +4,8 @@ import {
   AccessThis, AccessScope, AccessMember, AccessKeyed,
   CallScope, CallFunction, CallMember,
   PrefixNot, Binary,
-  LiteralPrimitive, LiteralArray, LiteralObject, LiteralString
+  LiteralPrimitive, LiteralArray, LiteralObject, LiteralString,
+  StringInterpolation
 } from './ast';
 
 let EOF = new Token(-1, null);
@@ -229,10 +230,32 @@ export class ParserImplementation {
     }
   }
 
+  parseStringInterpolation() {
+    let parts = [];
+
+    while (this.peek.text !== '`') {
+      if (this.optional('${')) {
+        let part = this.parseExpression();
+        this.expect('}');
+        parts.push(part);
+      } else if (typeof this.peek.value === 'string') {
+        let value = this.peek.value;
+         this.advance();
+        parts.push(new LiteralString(value));
+      }
+    }
+
+    return new StringInterpolation(parts);
+  }
+
   parsePrimary() {
     if (this.optional('(')) {
       let result = this.parseExpression();
       this.expect(')');
+      return result;
+    } else if (this.optional('`')) {
+      let result = this.parseStringInterpolation();
+      this.expect('`');
       return result;
     } else if (this.optional('null')) {
       return new LiteralPrimitive(null);

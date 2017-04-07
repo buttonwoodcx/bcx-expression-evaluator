@@ -16,6 +16,7 @@ test('Unparser: should unparse', t => {
     'a&&(b=1)',
     '2*(2+3)',
     '!(true?true:true)',
+    '`a${b+c}\\``'
   ];
   let i = expressions.length;
   while (i--) {
