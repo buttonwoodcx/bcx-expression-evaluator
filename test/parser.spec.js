@@ -288,6 +288,10 @@ test('Parser: parses StringInterpolation in pure string interpolation mode', t =
   const opts = {stringInterpolationMode: true};
 
   t.equal(parser.parse('\\`', opts).evaluate(), '`');
+
+  //beware, don't need escape "`" in top level
+  t.equal(parser.parse('`lorem${1+1}', opts).evaluate(), '`lorem2');
+
   t.equal(parser.parse('2+2', opts).evaluate(), '2+2');
   t.equal(parser.parse('${2+2}', opts).evaluate(), '4');
   t.equal(parser.parse('\\${2+2}', opts).evaluate(), '${2+2}');
