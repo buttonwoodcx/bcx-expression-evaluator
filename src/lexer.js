@@ -25,8 +25,8 @@ export class Token {
 }
 
 export class Lexer {
-  lex(text) {
-    let scanner = new Scanner(text);
+  lex(text, opts) {
+    let scanner = new Scanner(text, opts);
     let tokens = [];
     let token = scanner.scanToken();
 
@@ -40,11 +40,12 @@ export class Lexer {
 }
 
 export class Scanner {
-  constructor(input) {
+  constructor(input, opts = {}) {
     this.input = input;
     this.length = input.length;
     this.peek = 0;
     this.index = -1;
+    this.stringInterpolationMode = opts.stringInterpolationMode || false;
 
     // inStringInterpolation
     // 0: out of string interpolation
@@ -53,7 +54,7 @@ export class Scanner {
     // 3: in nested string interpolation's string part
     // 4: in nested string interpolation's interpolation part
     // 5 to Infinity: nested... odd means string part, even means interpolation part
-    this.inStringInterpolation = 0;
+    this.inStringInterpolation = this.stringInterpolationMode ? 1 : 0;
 
     this.advance();
   }
@@ -139,18 +140,21 @@ export class Scanner {
     } else {
       // in string interpolation's string part
       if (this.peek === $BACKTICK) {
-        this.inStringInterpolation -= 1;
-        return this.scanCharacter(start, String.fromCharCode(this.peek));
+        if (!this.stringInterpolationMode || this.inStringInterpolation >= 3) {
+          // in stringInterpolationMode, root level doesn't close at backtick
+          this.inStringInterpolation -= 1;
+          return this.scanCharacter(start, String.fromCharCode(this.peek));
+        } else {
+          return this.scanString();
+        }
       } else if (this.isStartOfInterpolation()) {
         const token = this.scanStartOfInterpolation();
         this.inStringInterpolation += 1;
         return token;
-      } else {
+      } else if (this.peek) {
         return this.scanString();
       }
     }
-
-
   }
 
   scanCharacter(start, text) {
@@ -257,7 +261,9 @@ export class Scanner {
       quote = this.peek;
       this.advance();  // Skip initial quote.
     } else {
-      quote = $BACKTICK;
+      // in pure string interpolation mode
+      // no backtick to close it for root level inStringInterpolation:1
+      quote = (this.stringInterpolationMode && this.inStringInterpolation === 1) ? $EOF : $BACKTICK;
     }
 
     let buffer;
@@ -295,7 +301,7 @@ export class Scanner {
 
         buffer.push(String.fromCharCode(unescaped));
         marker = this.index;
-      } else if (this.peek === $EOF) {
+      } else if (quote !== $EOF && this.peek === $EOF) {
         this.error('Unterminated quote');
       } else {
         this.advance();
@@ -324,9 +330,10 @@ export class Scanner {
   scanStartOfInterpolation() {
     assert(this.inStringInterpolation % 2 === 1);
     assert(this.isStartOfInterpolation());
+    let start = this.index;
     this.advance();
     this.advance();
-    return new Token(this.index, '${');
+    return new Token(start, '${');
   }
 
   advance() {

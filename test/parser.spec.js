@@ -261,10 +261,12 @@ test('Parser: parses StringInterpolation', t => {
   t.equal(parser.parse('`2+2`').evaluate(), '2+2');
   t.equal(parser.parse('`${2+2}`').evaluate(), '4');
   t.equal(parser.parse('`\\${2+2}`').evaluate(), '${2+2}');
+  t.equal(parser.parse('`$\\{2+2}`').evaluate(), '${2+2}');
   t.equal(parser.parse('`${1+1}$`').evaluate(), '2$');
   t.equal(parser.parse('`${1+1} $ {`').evaluate(), '2 $ {');
 
   t.throws(() => parser.parse('`${1+1}'));
+  t.throws(() => parser.parse('`${1+1\\}'));
   t.throws(() => parser.parse('`${1+1 `'));
   t.throws(() => parser.parse('`${1+1} ${`'));
   t.throws(() => parser.parse('`${ 1 + 1 + `${` }`'));
@@ -277,6 +279,33 @@ test('Parser: parses StringInterpolation', t => {
   // nested
   t.equal(parser.parse('`${`1+1` + a}`').evaluate(scope), '1+11');
   t.equal(parser.parse('`${`nested${1+1}`}`').evaluate(), 'nested2');
+  t.end();
+});
+
+test('Parser: parses StringInterpolation in pure string interpolation mode', t => {
+  // simply test the evaluated result
+
+  const opts = {stringInterpolationMode: true};
+
+  t.equal(parser.parse('\\`', opts).evaluate(), '`');
+  t.equal(parser.parse('2+2', opts).evaluate(), '2+2');
+  t.equal(parser.parse('${2+2}', opts).evaluate(), '4');
+  t.equal(parser.parse('\\${2+2}', opts).evaluate(), '${2+2}');
+  t.equal(parser.parse('$\\{2+2}', opts).evaluate(), '${2+2}');
+  t.equal(parser.parse('${1+1}$', opts).evaluate(), '2$');
+  t.equal(parser.parse('${1+1} $ {', opts).evaluate(), '2 $ {');
+
+  t.throws(() => parser.parse('${1+1+`}', opts));
+  t.throws(() => parser.parse('${1+1\\}', opts));
+  t.throws(() => parser.parse('${1+1 ', opts));
+  t.throws(() => parser.parse('${1+1} ${', opts));
+  t.throws(() => parser.parse('${ 1 + 1 + `${` }', opts));
+
+  let scope = createSimpleScope({a:1, b:'two'});
+
+  // nested
+  t.equal(parser.parse('${`1+1` + a}', opts).evaluate(scope), '1+11');
+  t.equal(parser.parse('${`nested${1+1}`}', opts).evaluate(), 'nested2');
   t.end();
 });
 

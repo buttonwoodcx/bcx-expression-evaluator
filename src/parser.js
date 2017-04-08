@@ -18,10 +18,9 @@ export class Parser {
 
   parse(input, opts = {}) {
     input = input || '';
-    const rejectAssignment = opts.rejectAssignment || false;
 
     if (!this.cache[input]) {
-      const parserImp = new ParserImplementation(this.lexer, input, {rejectAssignment});
+      const parserImp = new ParserImplementation(this.lexer, input, opts);
       this.cache[input] = parserImp.parseExpression();
 
       let exp = '';
@@ -41,9 +40,10 @@ export class Parser {
 export class ParserImplementation {
   constructor(lexer, input, opts = {}) {
     this.rejectAssignment = opts.rejectAssignment || false;
+    this.stringInterpolationMode = opts.stringInterpolationMode || false;
     this.index = 0;
     this.input = input;
-    this.tokens = lexer.lex(input);
+    this.tokens = lexer.lex(input, {stringInterpolationMode: this.stringInterpolationMode});
   }
 
   get peek() {
@@ -51,6 +51,10 @@ export class ParserImplementation {
   }
 
   parseExpression() {
+    if (this.index === 0 && this.stringInterpolationMode) {
+      return this.parseStringInterpolation(true);
+    }
+
     let start = this.peek.index;
     let result = this.parseConditional();
 
@@ -230,10 +234,12 @@ export class ParserImplementation {
     }
   }
 
-  parseStringInterpolation() {
+  parseStringInterpolation(rootLevel) {
     let parts = [];
 
-    while (this.peek.text !== '`') {
+    // in stringInterpolationMode, root level ends at EOF,
+    // nested level ends at backtick "`"
+    while (rootLevel ? (this.peek !== EOF) : (this.peek !== EOF && this.peek.text !== '`')) {
       if (this.optional('${')) {
         let part = this.parseExpression();
         this.expect('}');

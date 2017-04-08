@@ -13,6 +13,7 @@
   "devDependencies": {
     "babel-eslint": "^7.2.1",
     "babel-preset-es2015-rollup": "^3.0.0",
+    "babel-preset-stage-1": "^6.24.1",
     "babel-register": "^6.24.0",
     "eslint": "^3.19.0",
     "faucet": "^0.0.1",

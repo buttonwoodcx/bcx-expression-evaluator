@@ -2,9 +2,13 @@ import {Parser} from './parser';
 import {createOverrideContext, createSimpleScope} from './scope';
 
 const sharedParser = new Parser();
-function evaluateExpression(expression, context, helper, opts) {
+function evaluate(expression, context, helper, opts) {
   const exp = sharedParser.parse(expression, opts);
   return exp.evaluateWith(context, helper);
 }
 
-export {Parser, createOverrideContext, createSimpleScope, evaluateExpression};
+function evaluateStringInterpolation(expression, context, helper, opts = {}) {
+  return evaluate(expression, context, helper, {...opts, stringInterpolationMode: true});
+};
+
+export {Parser, createOverrideContext, createSimpleScope, evaluate, evaluateStringInterpolation};
