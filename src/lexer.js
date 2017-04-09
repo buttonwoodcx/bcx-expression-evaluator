@@ -43,6 +43,8 @@ const CONTEXT_NIL = 0; // out side of any context
 const CONTEXT_OBJECT = 1; // between { and } for object
 const CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION = 2; // between ` and ` but out of ${ and }
 const CONTEXT_INTERPOLATION_PART_OF_STRING_INTERPOLATION = 3; // between ${ and } in ``
+// currently CONTEXT_NIL, CONTEXT_OBJECT, CONTEXT_INTERPOLATION_PART_OF_STRING_INTERPOLATION
+// are treated same
 
 export class Scanner {
   constructor(input, opts = {}) {
@@ -151,7 +153,7 @@ export class Scanner {
       this.error(`Unexpected character [${character}]`);
       return null;
     } else {
-      // in string interpolation's string part
+      // in string interpolation's text part
       if (this.peek === $BACKTICK) {
         // in stringInterpolationMode, root level doesn't close at backtick
         if (this.isRootLevelOfStringInterpolationMode) {
