@@ -39,6 +39,11 @@ export class Lexer {
   }
 }
 
+const CONTEXT_NIL = 0; // out side of any context
+const CONTEXT_OBJECT = 1; // between { and } for object
+const CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION = 2; // between ` and ` but out of ${ and }
+const CONTEXT_INTERPOLATION_PART_OF_STRING_INTERPOLATION = 3; // between ${ and } in ``
+
 export class Scanner {
   constructor(input, opts = {}) {
     this.input = input;
@@ -47,23 +52,27 @@ export class Scanner {
     this.index = -1;
     this.stringInterpolationMode = opts.stringInterpolationMode || false;
 
-    // inStringInterpolation
-    // 0: out of string interpolation
-    // 1: in string interpolation's string part
-    // 2: in string interpolation's interpolation part
-    // 3: in nested string interpolation's string part
-    // 4: in nested string interpolation's interpolation part
-    // 5 to Infinity: nested... odd means string part, even means interpolation part
-    this.inStringInterpolation = this.stringInterpolationMode ? 1 : 0;
+    const initialContext = this.stringInterpolationMode ?
+                           CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION :
+                           CONTEXT_NIL;
+    this.contextStack = [initialContext];
 
     this.advance();
+  }
+
+  get context() {
+    return this.contextStack[this.contextStack.length - 1];
+  }
+
+  get isRootLevelOfStringInterpolationMode() {
+    return this.stringInterpolationMode && this.contextStack.length === 1;
   }
 
   scanToken() {
     let start = this.index;
 
-    if (this.inStringInterpolation % 2 === 0) {
-      // normal mode, at least not in string part
+    if (this.context !== CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION) {
+      // normal mode, at least not in string part of interpolation
 
       // Skip whitespace.
       while (this.peek <= $SPACE) {
@@ -88,14 +97,18 @@ export class Scanner {
       case $PERIOD:
         this.advance();
         return isDigit(this.peek) ? this.scanNumber(start) : new Token(start, '.');
+
+      case $LBRACE:
+        this.contextStack.push(CONTEXT_OBJECT);
+        return this.scanCharacter(start, String.fromCharCode(this.peek));
       case $RBRACE:
-        if (this.inStringInterpolation > 0) {
-          // return from interpolation part to string part.
-          this.inStringInterpolation -= 1;
-        } // fall through
+        // '}' has two meanings,
+        // in CONTEXT_OBJECT, means close of object,
+        // in CONTEXT_INTERPOLATION_PART_OF_STRING_INTERPOLATION, means close of interpolation
+        this.contextStack.pop();
+        return this.scanCharacter(start, String.fromCharCode(this.peek));
       case $LPAREN:
       case $RPAREN:
-      case $LBRACE:
       case $LBRACKET:
       case $RBRACKET:
       case $COMMA:
@@ -123,7 +136,7 @@ export class Scanner {
       case $BAR:
         return this.scanComplexOperator(start, $BAR, '|', '|');
       case $BACKTICK:
-        this.inStringInterpolation += 1;
+        this.contextStack.push(CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION);
         return this.scanCharacter(start, String.fromCharCode(this.peek));
       case $NBSP:
         while (isWhitespace(this.peek)) {
@@ -140,16 +153,17 @@ export class Scanner {
     } else {
       // in string interpolation's string part
       if (this.peek === $BACKTICK) {
-        if (!this.stringInterpolationMode || this.inStringInterpolation >= 3) {
-          // in stringInterpolationMode, root level doesn't close at backtick
-          this.inStringInterpolation -= 1;
-          return this.scanCharacter(start, String.fromCharCode(this.peek));
-        } else {
+        // in stringInterpolationMode, root level doesn't close at backtick
+        if (this.isRootLevelOfStringInterpolationMode) {
+          // backtick is part of root level string
           return this.scanString();
+        } else {
+          this.contextStack.pop();
+          return this.scanCharacter(start, String.fromCharCode(this.peek));
         }
       } else if (this.isStartOfInterpolation()) {
         const token = this.scanStartOfInterpolation();
-        this.inStringInterpolation += 1;
+        this.contextStack.push(CONTEXT_INTERPOLATION_PART_OF_STRING_INTERPOLATION);
         return token;
       } else if (this.peek) {
         return this.scanString();
@@ -250,20 +264,20 @@ export class Scanner {
   }
 
   scanString() {
-    if (this.inStringInterpolation % 2 === 0) {
+    if (this.context !== CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION) {
       assert(this.peek === $SQ || this.peek === $DQ);
     }
 
     let start = this.index;
     let quote;
 
-    if (this.inStringInterpolation % 2 === 0) {
+    if (this.context !== CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION) {
       quote = this.peek;
       this.advance();  // Skip initial quote.
     } else {
       // in pure string interpolation mode
-      // no backtick to close it for root level inStringInterpolation:1
-      quote = (this.stringInterpolationMode && this.inStringInterpolation === 1) ? $EOF : $BACKTICK;
+      // no backtick to close it for root level stringInterpolationMode
+      quote = this.isRootLevelOfStringInterpolationMode ? $EOF : $BACKTICK;
     }
 
     let buffer;
@@ -310,7 +324,7 @@ export class Scanner {
 
     let last = this.input.substring(marker, this.index);
 
-    if (this.inStringInterpolation % 2 === 0) {
+    if (this.context !== CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION) {
       this.advance();  // Skip terminating quote.
     }
 
@@ -328,7 +342,7 @@ export class Scanner {
   }
 
   scanStartOfInterpolation() {
-    assert(this.inStringInterpolation % 2 === 1);
+    assert(this.context === CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION);
     assert(this.isStartOfInterpolation());
     let start = this.index;
     this.advance();

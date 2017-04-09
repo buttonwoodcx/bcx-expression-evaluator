@@ -260,6 +260,8 @@ test('Parser: parses StringInterpolation', t => {
   t.equal(parser.parse('`\\``').evaluate(), '`');
   t.equal(parser.parse('`2+2`').evaluate(), '2+2');
   t.equal(parser.parse('`${2+2}`').evaluate(), '4');
+  t.equal(parser.parse('`${{a:3}["a"]}`').evaluate(), '3');
+  t.equal(parser.parse('`${`h${1+1}`+{a:3}["a"]}`').evaluate(), 'h23');
   t.equal(parser.parse('`\\${2+2}`').evaluate(), '${2+2}');
   t.equal(parser.parse('`$\\{2+2}`').evaluate(), '${2+2}');
   t.equal(parser.parse('`${1+1}$`').evaluate(), '2$');
@@ -294,6 +296,7 @@ test('Parser: parses StringInterpolation in pure string interpolation mode', t =
 
   t.equal(parser.parse('2+2', opts).evaluate(), '2+2');
   t.equal(parser.parse('${2+2}', opts).evaluate(), '4');
+  t.equal(parser.parse('${`h${1+1}`+{a:3}["a"]}`', opts).evaluate(), 'h23`');
   t.equal(parser.parse('\\${2+2}', opts).evaluate(), '${2+2}');
   t.equal(parser.parse('$\\{2+2}', opts).evaluate(), '${2+2}');
   t.equal(parser.parse('${1+1}$', opts).evaluate(), '2$');
