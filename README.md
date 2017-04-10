@@ -1,6 +1,6 @@
 # bcx-expression-evaluator [![Build Status](https://travis-ci.org/buttonwoodcx/bcx-expression-evaluator.svg?branch=master)](https://travis-ci.org/buttonwoodcx/bcx-expression-evaluator)
 
-Safely evaluate an Javascript like expression in given context.
+Safely evaluate a Javascript like expression in given context.
 
 In Buttonwood, we heavily use meta-data (JSON format) to deliver business logic from backend to front-end. We don't want to design a meta-data format too complex to maintain, this tool allows us to define some light logic in pure string, way more flexible than rigid meta-data, much safer and more maintainable than passing js function as string (we did that) from backend to front-end.
 
