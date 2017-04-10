@@ -1,4 +1,4 @@
-# bcx-expression-evaluator
+# bcx-expression-evaluator [![Build Status](https://travis-ci.org/buttonwoodcx/bcx-expression-evaluator.svg?branch=master)](https://travis-ci.org/buttonwoodcx/bcx-expression-evaluator)
 
 Safely evaluate an Javascript like expression in given context.
 
