@@ -34,6 +34,7 @@
     "build": "rollup -c",
     "lint": "eslint src",
     "prepare": "npm run build",
+    "preversion": "npm test",
     "pretest": "npm run lint",
     "test": "env BABEL_ENV=test tape -r babel-register 'test/**/*.spec.js' | faucet"
   },
