@@ -8,6 +8,13 @@
     "evaluator"
   ],
   "homepage": "http://github.com/buttonwoodcx/bcx-expression-evaluator",
+  "bugs": {
+    "url": "https://github.com/buttonwoodcx/bcx-expression-evaluator/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/buttonwoodcx/bcx-expression-evaluator"
+  },
   "license": "MIT",
   "author": "Chunpeng Huo",
   "devDependencies": {
