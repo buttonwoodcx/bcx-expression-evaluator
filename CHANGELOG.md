@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 - 12/Apr/2017
+
+   * add url in package.json
+
 ## 0.1.0 - 10/Apr/2017
 
   * initial release.
