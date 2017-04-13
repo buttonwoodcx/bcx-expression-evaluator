@@ -95,12 +95,12 @@ You don't have to escape backtick in stringInterpolationMode
     evaluate('b > 3 ? (a = true) : (a = false)', obj); // obj is now {a: false, b: 2}
 
 ### disable assignment if you don't need it
-This doesn't eliminate side effect, it would not prevent any function you called in the expression to mutate something.
+This doesn't eliminate side effect, it would not prevent any function you called in bcx-expression to mutate something.
 
     evaluate('a=1', {a:0}, null, {rejectAssignment: true}); // throws error
 
 ## Difference from real Javascript expression
-The expression looks like Javascript expression, but there are some difference.
+bcx-expression looks like Javascript expression, but there are some difference.
 
 ### wrong reference results undefined instead of error
 
@@ -109,6 +109,7 @@ The expression looks like Javascript expression, but there are some difference.
     evaluate('b.a', obj); // => undefined
 
 ### default result for +/- operators
+Behaviour carried over from aurelia-binding.
 
     undefined + 1 // => NaN
     1 + undefined // => NaN
@@ -117,7 +118,7 @@ The expression looks like Javascript expression, but there are some difference.
     undefined + undefined // => NaN
     null + null // => 0
 
-    // in our expression, + and - ignores undefined/null value,
+    // in bcx-expression, + and - ignores undefined/null value,
     // if both left and right parts are (evaluated to) undefined/null, result default to 0
     evaluate('undefined + 1'); // => 1
     evaluate('1 + undefined'); // => 1
@@ -128,7 +129,7 @@ The expression looks like Javascript expression, but there are some difference.
 
 ### no function expression
 
-    // all would not work in expression
+    // all would not work in bcx-expression
     (function(){return 1})()
     (() => 1)()
     arr.sort((a, b) => a > b)
@@ -138,7 +139,10 @@ The expression looks like Javascript expression, but there are some difference.
 
 ### no regular expression support
 
-    // this would not work
+    // this would not work in bcx-expression
     /\w/.test(string)
+
+### some Javascript operators would not work
+`typeof`, 'instanceof', 'delete' would not work, because bcx-expression is not real Javascript.
 
 [BUTTONWOODCX™ PTY LTD](http://www.buttonwood.com.au).
