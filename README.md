@@ -143,6 +143,6 @@ Behaviour carried over from aurelia-binding.
     /\w/.test(string)
 
 ### some Javascript operators would not work
-`typeof`, 'instanceof', 'delete' would not work, because bcx-expression is not real Javascript.
+`typeof`, `instanceof`, `delete` would not work, because bcx-expression is not real Javascript.
 
 [BUTTONWOODCX™ PTY LTD](http://www.buttonwood.com.au).
