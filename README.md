@@ -136,5 +136,9 @@ The expression looks like Javascript expression, but there are some difference.
     // but this would work
     arr.sort(aHelperFunc)
 
+### no regular expression support
+
+    // this would not work
+    /\w/.test(string)
 
 [BUTTONWOODCX™ PTY LTD](http://www.buttonwood.com.au).
