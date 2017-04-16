@@ -8,11 +8,17 @@ function cube(v) {
 
 test('evaluate: evaluates', t => {
   t.throws(() => evaluate(''));
-  t.equal(evaluate('$this === "test"', 'test'), true);
-  t.equal(evaluate('_.isString(name)', 'test', {_}), false);
-  t.equal(evaluate('_.isString(name)', {name: 'a'}, {_}), true);
   t.equal(evaluate('a', {a:2}), 2);
   t.equal(evaluate('a+b', {a:2,b:3}), 5);
+  t.end();
+});
+
+
+test('evaluate: evaluates with primitive value as model', t => {
+  t.equal(evaluate('$this === "test"', 'test'), true);
+  t.equal(evaluate('$this > 1', 2), true);
+  t.equal(evaluate('_.isString(name)', 'test', {_}), false);
+  t.equal(evaluate('_.isString(name)', {name: 'a'}, {_}), true);
   t.end();
 });
 
