@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0 - 20/Apr/2017
+
+  * simplify scope. Scope now is just a stack of objects.
+
 ## 0.1.2 - 13/Apr/2017
 
   * fixed exception when use "in" operator on pure string bindingContext.
