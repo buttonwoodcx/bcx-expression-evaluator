@@ -1,5 +1,5 @@
 import {Unparser} from './unparser';
-import {getContextFor, createSimpleScope} from './scope';
+import {getContextFor, createScope} from './scope';
 
 export class Expression {
   constructor() {
@@ -11,7 +11,7 @@ export class Expression {
   }
 
   evaluateWith(bindingContext, parentBindingContext, args) {
-    return this.evaluate(createSimpleScope(bindingContext, parentBindingContext), args);
+    return this.evaluate(createScope(bindingContext, parentBindingContext), args);
   }
 
   assign(scope, value) {
@@ -69,16 +69,11 @@ export class Conditional extends Expression {
 export class AccessThis extends Expression {
   constructor(ancestor) {
     super();
-    this.ancestor = ancestor;
+    this.ancestor = ancestor || 0;
   }
 
   evaluate(scope) {
-    let oc = scope.overrideContext;
-    let i = this.ancestor;
-    while (i-- && oc) {
-      oc = oc.parentOverrideContext;
-    }
-    return i < 1 && oc ? oc.bindingContext : undefined;
+    return scope[this.ancestor];
   }
 
   accept(visitor) {
@@ -97,7 +92,7 @@ export class AccessScope extends Expression {
 
   evaluate(scope) {
     let context = getContextFor(this.name, scope, this.ancestor);
-    return context[this.name];
+    return context ? context[this.name] : undefined;
   }
 
   assign(scope, value) {

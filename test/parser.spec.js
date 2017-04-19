@@ -14,7 +14,7 @@ import {
   Assign,
   StringInterpolation
 } from '../src/ast';
-import {createSimpleScope} from '../src/scope';
+import {createScope} from '../src/scope';
 import test from 'tape';
 
 
@@ -273,7 +273,7 @@ test('Parser: parses StringInterpolation', t => {
   t.throws(() => parser.parse('`${1+1} ${`'));
   t.throws(() => parser.parse('`${ 1 + 1 + `${` }`'));
 
-  let scope = createSimpleScope({a:1, b:'two'});
+  let scope = createScope({a:1, b:'two'});
 
   t.equal(parser.parse('true ? `#a${b}` : `#${a}b`').evaluate(scope), '#atwo');
   t.equal(parser.parse('false ? `#a${b}` : `#${a}b`').evaluate(scope), '#1b');
@@ -308,7 +308,7 @@ test('Parser: parses StringInterpolation in pure string interpolation mode', t =
   t.throws(() => parser.parse('${1+1} ${', opts));
   t.throws(() => parser.parse('${ 1 + 1 + `${` }', opts));
 
-  let scope = createSimpleScope({a:1, b:'two'});
+  let scope = createScope({a:1, b:'two'});
 
   // nested
   t.equal(parser.parse('${`1+1` + a}', opts).evaluate(scope), '1+11');
