@@ -1,12 +1,12 @@
 import {Assign, AccessScope} from '../../src/ast';
-import {createScope} from '../../src/scope';
+import {createOverrideContext, createSimpleScope} from '../../src/scope';
 import test from 'tape';
 
 test('AST:Assign: can chain assignments', t => {
   const foo = new Assign(new AccessScope('foo'), new AccessScope('bar'));
-  const scope = createScope({});
+  const scope = { overrideContext: createOverrideContext(undefined) };
   foo.assign(scope, 1);
-  t.equal(scope[0].foo, 1);
-  t.equal(scope[0].bar, 1);
+  t.equal(scope.overrideContext.foo, 1);
+  t.equal(scope.overrideContext.bar, 1);
   t.end();
 });

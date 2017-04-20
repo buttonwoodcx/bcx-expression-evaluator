@@ -1,5 +1,5 @@
 import {AccessThis} from '../../src/ast';
-import {createScope} from '../../src/scope';
+import {createOverrideContext, createSimpleScope} from '../../src/scope';
 import test from 'tape';
 
 let $parent = new AccessThis(1);
@@ -7,22 +7,24 @@ let $parent$parent = new AccessThis(2);
 let $parent$parent$parent = new AccessThis(3);
 
 test('AST:AccessThis: evaluates undefined bindingContext', t => {
-  let scope = createScope();
+  let coc = createOverrideContext;
+
+  let scope = { overrideContext: coc(undefined) };
   t.equal($parent.evaluate(scope), undefined);
   t.equal($parent$parent.evaluate(scope), undefined);
   t.equal($parent$parent$parent.evaluate(scope), undefined);
 
-  scope = createScope(undefined, undefined, undefined);
+  scope = { overrideContext: coc(undefined, coc(undefined)) };
   t.equal($parent.evaluate(scope), undefined);
   t.equal($parent$parent.evaluate(scope), undefined);
   t.equal($parent$parent$parent.evaluate(scope), undefined);
 
-  scope = createScope(undefined, undefined, undefined, undefined);
+  scope = { overrideContext: coc(undefined, coc(undefined, coc(undefined))) };
   t.equal($parent.evaluate(scope), undefined);
   t.equal($parent$parent.evaluate(scope), undefined);
   t.equal($parent$parent$parent.evaluate(scope), undefined);
 
-  scope = createScope(undefined, undefined, undefined, undefined, undefined);
+  scope = { overrideContext: coc(undefined, coc(undefined, coc(undefined, coc(undefined)))) };
   t.equal($parent.evaluate(scope), undefined);
   t.equal($parent$parent.evaluate(scope), undefined);
   t.equal($parent$parent$parent.evaluate(scope), undefined);
@@ -30,22 +32,24 @@ test('AST:AccessThis: evaluates undefined bindingContext', t => {
 });
 
 test('AST:AccessThis: evaluates null bindingContext', t => {
-  let scope = createScope(null);
+  let coc = createOverrideContext;
+
+  let scope = { overrideContext: coc(null) };
   t.equal($parent.evaluate(scope), undefined);
   t.equal($parent$parent.evaluate(scope), undefined);
   t.equal($parent$parent$parent.evaluate(scope), undefined);
 
-  scope = createScope(null, null);
+  scope = { overrideContext: coc(null, coc(null)) };
   t.equal($parent.evaluate(scope), null);
   t.equal($parent$parent.evaluate(scope), undefined);
   t.equal($parent$parent$parent.evaluate(scope), undefined);
 
-  scope = createScope(null, null, null);
+  scope = { overrideContext: coc(null, coc(null, coc(null))) };
   t.equal($parent.evaluate(scope), null);
   t.equal($parent$parent.evaluate(scope), null);
   t.equal($parent$parent$parent.evaluate(scope), undefined);
 
-  scope = createScope(null, null, null, null);
+  scope = { overrideContext: coc(null, coc(null, coc(null, coc(null)))) };
   t.equal($parent.evaluate(scope), null);
   t.equal($parent$parent.evaluate(scope), null);
   t.equal($parent$parent$parent.evaluate(scope), null);
@@ -53,26 +57,27 @@ test('AST:AccessThis: evaluates null bindingContext', t => {
 });
 
 test('AST:AccessThis: evaluates defined bindingContext', t => {
+  let coc = createOverrideContext;
   let a = { a: 'a' };
   let b = { b: 'b' };
   let c = { c: 'c' };
   let d = { d: 'd' };
-  let scope = createScope(a);
+  let scope = { overrideContext: coc(a) };
   t.equal($parent.evaluate(scope), undefined);
   t.equal($parent$parent.evaluate(scope), undefined);
   t.equal($parent$parent$parent.evaluate(scope), undefined);
 
-  scope = createScope(a, b);
+  scope = { overrideContext: coc(a, coc(b)) };
   t.equal($parent.evaluate(scope), b);
   t.equal($parent$parent.evaluate(scope), undefined);
   t.equal($parent$parent$parent.evaluate(scope), undefined);
 
-  scope = createScope(a, b, c);
+  scope = { overrideContext: coc(a, coc(b, coc(c))) };
   t.equal($parent.evaluate(scope), b);
   t.equal($parent$parent.evaluate(scope), c);
   t.equal($parent$parent$parent.evaluate(scope), undefined);
 
-  scope = createScope(a, b, c, d);
+  scope = { overrideContext: coc(a, coc(b, coc(c, coc(d)))) };
   t.equal($parent.evaluate(scope), b);
   t.equal($parent$parent.evaluate(scope), c);
   t.equal($parent$parent$parent.evaluate(scope), d);
