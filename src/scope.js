@@ -25,5 +25,6 @@ export function getContextFor(name, scope, ancestor = 0) {
 }
 
 export function createScope(...bindingContexts) {
-  return bindingContexts;
+  if (bindingContexts) return bindingContexts;
+  return [undefined];
 }
