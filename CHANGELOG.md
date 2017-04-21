@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0 - 21/Apr/2017
+
+  * revert work on simplifying scope. Find some usecase of complex aurelia-binding scope in bcx-validator.
+
 ## 0.2.0 - 20/Apr/2017
 
   * simplify scope. Scope now is just a stack of objects.
