@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1 - 01/Jun/2017
+
+  * remove try/catch for better performance.
+
 ## 0.3.0 - 21/Apr/2017
 
   * revert work on simplifying scope. Find some usecase of complex aurelia-binding scope in bcx-validator.

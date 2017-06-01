@@ -9,12 +9,6 @@
 //   overrideContext: OverrideContext;
 // }
 
-function has(obj, name) {
-  let result = false;
-  try { result = name in obj; } catch (e) {}
-  return result;
-}
-
 export function createOverrideContext(bindingContext, parentOverrideContext) {
   return {
     bindingContext: bindingContext,
@@ -34,16 +28,16 @@ export function getContextFor(name, scope, ancestor) {
     if (ancestor || !oc) {
       return undefined;
     }
-    return has(oc, name) ? oc : oc.bindingContext;
+    return (oc && oc.hasOwnProperty(name)) ? oc : oc.bindingContext;
   }
 
   // traverse the context and it's ancestors, searching for a context that has the name.
-  while (oc && !(has(oc, name)) && !(oc.bindingContext && has(oc.bindingContext, name))) {
+  while (oc && !oc.hasOwnProperty(name) && !(oc.bindingContext && oc.bindingContext.hasOwnProperty(name))) {
     oc = oc.parentOverrideContext;
   }
   if (oc) {
     // we located a context with the property.  return it.
-    return has(oc, name) ? oc : oc.bindingContext;
+    return oc.hasOwnProperty(name) ? oc : oc.bindingContext;
   }
   // the name wasn't found.  return the root binding context.
   return scope.bindingContext || scope.overrideContext;
