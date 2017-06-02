@@ -10,9 +10,8 @@
 // }
 
 function has(obj, name) {
-  let result = false;
-  try { result = name in obj; } catch (e) {}
-  return result;
+  const type = typeof obj;
+  return (type === 'object' || type === 'function') && (name in obj);
 }
 
 export function createOverrideContext(bindingContext, parentOverrideContext) {
