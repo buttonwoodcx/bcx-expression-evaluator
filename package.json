@@ -23,7 +23,6 @@
     "babel-preset-stage-1": "^6.24.1",
     "babel-register": "^6.24.1",
     "eslint": "^4.0.0",
-    "faucet": "^0.0.1",
     "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-node-resolve": "^3.0.0",
@@ -37,7 +36,7 @@
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
     "pretest": "npm run lint",
-    "test": "env BABEL_ENV=test tape -r babel-register 'test/**/*.spec.js' | faucet"
+    "test": "env BABEL_ENV=test tape -r babel-register 'test/**/*.spec.js'"
   },
   "main": "dist/index.js"
 }
