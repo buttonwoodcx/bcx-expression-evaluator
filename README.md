@@ -1,6 +1,6 @@
 # bcx-expression-evaluator [![Build Status](https://travis-ci.org/buttonwoodcx/bcx-expression-evaluator.svg?branch=master)](https://travis-ci.org/buttonwoodcx/bcx-expression-evaluator)
 
-Safely evaluate a Javascript-like expression in given context.
+Safely evaluate a JavaScript-like expression in given context.
 
 In Buttonwood, we heavily use meta-data (JSON format) to deliver business logic from backend to front-end. We don't want to design a meta-data format too complex to maintain, this tool allows us to define some light logic in pure string, way more flexible than rigid meta-data, much safer and more maintainable than passing js function as string (we did that) from backend to front-end.
 
@@ -76,7 +76,7 @@ You don't have to escape backtick in stringInterpolationMode
     evaluate('`${a+1}`', {a:1}, null, {stringInterpolationMode: true}); // => '`2`'
     evaluateStringInterpolation('`${a+1}`', {a:1}); // => '`2`'
 
-### safe. It is not an eval in Javascript, doesn't have access to global javascript objects
+### safe. It is not an eval in JavaScript, doesn't have access to global JavaScript objects
 
     evaluate('parseInt(a, 10)', {a:"7"}) // => undefined
 
@@ -99,8 +99,8 @@ This doesn't eliminate side effect, it would not prevent any function you called
 
     evaluate('a=1', {a:0}, null, {rejectAssignment: true}); // throws error
 
-## Difference from real Javascript expression
-bcx-expression looks like Javascript expression, but there are some difference.
+## Difference from real JavaScript expression
+bcx-expression looks like JavaScript expression, but there are some difference.
 
 ### wrong reference results undefined instead of error
 
@@ -142,7 +142,7 @@ Behaviour carried over from aurelia-binding.
     // this would not work in bcx-expression
     /\w/.test(string)
 
-### some Javascript operators would not work
-`typeof`, `instanceof`, `delete` would not work, because bcx-expression is not real Javascript.
+### some JavaScript operators would not work
+`typeof`, `instanceof`, `delete` would not work, because bcx-expression is not real JavaScript.
 
 [BUTTONWOODCX™ PTY LTD](http://www.buttonwood.com.au).

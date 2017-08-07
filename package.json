@@ -1,7 +1,7 @@
 {
   "name": "bcx-expression-evaluator",
   "version": "0.3.2",
-  "description": "Safely evaluate a Javascript like expression in given context.",
+  "description": "Safely evaluate a JavaScript like expression in given context.",
   "keywords": [
     "eval",
     "expression",
