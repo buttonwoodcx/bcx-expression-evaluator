@@ -17,7 +17,7 @@ This tool was mainly extracted, modified and extended from the expression parser
   * `expression`: the expression string to be evaluated
   * `context`: the input model object
   * `helper`: optional helper object
-  * `opts`: optional hashmap, current only support `rejectAssignment` and `stringInterpolationMode`
+  * `opts`: optional hashmap, currently only support `rejectAssignment` and `stringInterpolationMode`
     * `rejectAssignment` rejects assignment in expression
     * `stringInterpolationMode` treats the whole expression like if it's in backticks \`expression\`
 
@@ -25,122 +25,151 @@ This tool was mainly extracted, modified and extended from the expression parser
 
 ## Usage (in es6 syntax)
 
-    import {evaluate, evaluateStringInterpolation} from 'bcx-expression-evaluator';
+```javascript
+import {evaluate, evaluateStringInterpolation} from 'bcx-expression-evaluator';
 
-    const context = {
-      a: 1,
-      b: 2,
-      c: {
-        one: 'one',
-        two: 'two'
-      },
-      avg: function() { return (this.a + this.b) / 2; }
-    };
+const context = {
+    a: 1,
+    b: 2,
+    c: {
+    one: 'one',
+    two: 'two'
+    },
+    avg: function() { return (this.a + this.b) / 2; }
+};
 
-    evaluate('avg() > a ? c.one : c.two', context);  // => 'one';
-
+evaluate('avg() > a ? c.one : c.two', context);  // => 'one';
+```
 
 ### use some helper
 
-    const helper = {
-      limit: 5,
-      sum: (v1, v2) => v1 + v2
-    };
+```javascript
+const helper = {
+    limit: 5,
+    sum: (v1, v2) => v1 + v2
+};
 
-    evaluate('sum(a, b) > limit', context, helper);  // => false;
+evaluate('sum(a, b) > limit', context, helper);  // => false;
+```
 
 ### access context object itself with special `$this` variable
 
-    evaluate('$this', context); // => the context object
-    evaluate('$this.a', context); // => 1
+```javascript
+evaluate('$this', context); // => the context object
+evaluate('$this.a', context); // => 1
+```
 
 ### explicitly access helper object with special `$parent` variable
 (carried over from aurelia-binding, might change $parent to $helper in future releases.)
 
-    evaluate('a', {a:1}, {a:2}); // => 1
-    evaluate('$this.a', {a:1}, {a:2}); // => 1
-    evaluate('$parent.a', {a:1}, {a:2}); // => 2
+```javascript
+evaluate('a', {a:1}, {a:2}); // => 1
+evaluate('$this.a', {a:1}, {a:2}); // => 1
+evaluate('$parent.a', {a:1}, {a:2}); // => 2
+```
 
 ### support es6 string interpolation
 
-    evaluate('`${a+1}`', {a:1}); // => '2'
+```javascript
+evaluate('`${a+1}`', {a:1}); // => '2'
+```
 
 You can evaluate a string interpolation without backtick "`"
 
-    evaluate('${a+1}', {a:1}, null, {stringInterpolationMode: true}); // => '2'
-    evaluateStringInterpolation('${a+1}', {a:1}); // => '2'
+```javascript
+evaluate('${a+1}', {a:1}, null, {stringInterpolationMode: true}); // => '2'
+evaluateStringInterpolation('${a+1}', {a:1}); // => '2'
+```
 
 You don't have to escape backtick in stringInterpolationMode
 
-    evaluate('`\\`${a+1}\\``', {a:1}); // => '`2`', beware you need double escape as we are writing expression in string quotes
-    evaluate('`${a+1}`', {a:1}, null, {stringInterpolationMode: true}); // => '`2`'
-    evaluateStringInterpolation('`${a+1}`', {a:1}); // => '`2`'
+```javascript
+evaluate('`\\`${a+1}\\``', {a:1}); // => '`2`', beware you need double escape as we are writing expression in string quotes
+evaluate('`${a+1}`', {a:1}, null, {stringInterpolationMode: true}); // => '`2`'
+evaluateStringInterpolation('`${a+1}`', {a:1}); // => '`2`'
+```
 
 ### safe. It is not an eval in JavaScript, doesn't have access to global JavaScript objects
 
-    evaluate('parseInt(a, 10)', {a:"7"}) // => undefined
+```javascript
+evaluate('parseInt(a, 10)', {a:"7"}) // => undefined
 
-    // only have access to context and helper
-    evaluate('parseInt(a, 10)', {a:"7"}, {parseInt: parseInt}) // => 7
+// only have access to context and helper
+evaluate('parseInt(a, 10)', {a:"7"}, {parseInt: parseInt}) // => 7
+```
 
 ### silent most of the time
 
-    evaluate('a.b', {}) // => undefined, no error throwed
-    evaluate('a.b || c', {c: 'lorem'}) // => 'lorem', no error throwed
+```javascript
+evaluate('a.b', {}) // => undefined, no error throwed
+evaluate('a.b || c', {c: 'lorem'}) // => 'lorem', no error throwed
+```
 
 ### you can use assignment to mutate context object (or even helper object)
 
-    let obj = {a: 1, b: 2};
-    evaluate('a = 3', obj); // obj is now {a: 3, b: 2}
-    evaluate('b > 3 ? (a = true) : (a = false)', obj); // obj is now {a: false, b: 2}
+```javascript
+let obj = {a: 1, b: 2};
+evaluate('a = 3', obj); // obj is now {a: 3, b: 2}
+evaluate('b > 3 ? (a = true) : (a = false)', obj); // obj is now {a: false, b: 2}
+```
 
 ### disable assignment if you don't need it
 This doesn't eliminate side effect, it would not prevent any function you called in bcx-expression to mutate something.
 
-    evaluate('a=1', {a:0}, null, {rejectAssignment: true}); // throws error
+```javascript
+evaluate('a=1', {a:0}, null, {rejectAssignment: true}); // throws error
+```
 
 ## Difference from real JavaScript expression
 bcx-expression looks like JavaScript expression, but there are some difference.
 
 ### wrong reference results undefined instead of error
 
-    let obj = {a: 1};
-    obj.b.a // => error
-    evaluate('b.a', obj); // => undefined
+```javascript
+let obj = {a: 1};
+obj.b.a // => error
+evaluate('b.a', obj); // => undefined
+```
 
 ### default result for +/- operators
 Behaviour carried over from aurelia-binding.
 
-    undefined + 1 // => NaN
-    1 + undefined // => NaN
-    null + 1 // => 1
-    1 + null // => 1
-    undefined + undefined // => NaN
-    null + null // => 0
+```javascript
+undefined + 1 // => NaN
+1 + undefined // => NaN
+null + 1 // => 1
+1 + null // => 1
+undefined + undefined // => NaN
+null + null // => 0
 
-    // in bcx-expression, + and - ignores undefined/null value,
-    // if both left and right parts are (evaluated to) undefined/null, result default to 0
-    evaluate('undefined + 1'); // => 1
-    evaluate('1 + undefined'); // => 1
-    evaluate('null + 1'); // => 1
-    evaluate('1 + null'); // => 1
-    evaluate('undefined + undefined'); // => 0
-    evaluate('null + null'); // => 0
+// in bcx-expression, + and - ignores undefined/null value,
+// if both left and right parts are (evaluated to) undefined/null, result default to 0
+evaluate('undefined + 1'); // => 1
+evaluate('1 + undefined'); // => 1
+evaluate('null + 1'); // => 1
+evaluate('1 + null'); // => 1
+evaluate('undefined + undefined'); // => 0
+evaluate('null + null'); // => 0
+```
 
 ### no function expression
 
-    // all would not work in bcx-expression
-    (function(){return 1})()
-    (() => 1)()
-    arr.sort((a, b) => a > b)
+```javascript
+// all would not work in bcx-expression
+(function(){return 1})()
+(() => 1)()
+arr.sort((a, b) => a > b)
 
-    // but this would work
-    arr.sort(aHelperFunc)
+// but this would work
+arr.sort(aHelperFunc)
+```
 
 ### no regular expression support
 
-    // this would not work in bcx-expression
-    /\w/.test(string)
+```javascript
+// this would not work in bcx-expression
+/\w/.test(string)
+```
 
 ### some JavaScript operators would not work
 `typeof`, `instanceof`, `delete` would not work, because bcx-expression is not real JavaScript.
