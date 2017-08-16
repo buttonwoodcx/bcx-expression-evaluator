@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3 - 16/Aug/2017
+
+  * add basic TypeScript support.
+
 ## 0.3.2 - 02/Jun/2017
 
   * use "in" operator again. hasOwnProperty does not work for getter in babel compiled code, but "in" operator works.

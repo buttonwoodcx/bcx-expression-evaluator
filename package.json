@@ -38,5 +38,6 @@
     "pretest": "npm run lint",
     "test": "env BABEL_ENV=test tape -r babel-register 'test/**/*.spec.js'"
   },
-  "main": "dist/index.js"
+  "main": "dist/index.js",
+  "types": "index.d.ts"
 }
