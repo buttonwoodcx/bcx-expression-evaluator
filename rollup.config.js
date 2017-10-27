@@ -3,10 +3,12 @@ import resolve from 'rollup-plugin-node-resolve';
 import uglify from 'rollup-plugin-uglify';
 
 export default {
-  entry: 'src/index.js',
-  format: 'umd',
-  moduleName: 'BcxExpressionEvaluator',
-  dest: 'dist/index.js',
+  input: 'src/index.js',
+  name: 'BcxExpressionEvaluator',
+  output: {
+    format: 'umd',
+    file: 'dist/index.js',
+  },
   external: [],
   globals: {},
   plugins: [
