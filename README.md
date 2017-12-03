@@ -101,8 +101,8 @@ evaluate('parseInt(a, 10)', {a:"7"}, {parseInt: parseInt}) // => 7
 ### silent most of the time
 
 ```javascript
-evaluate('a.b', {}) // => undefined, no error throwed
-evaluate('a.b || c', {c: 'lorem'}) // => 'lorem', no error throwed
+evaluate('a.b', {}) // => undefined, no error thrown
+evaluate('a.b || c', {c: 'lorem'}) // => 'lorem', no error thrown
 ```
 
 ### you can use assignment to mutate context object (or even helper object)
@@ -135,6 +135,7 @@ evaluate('b.a', obj); // => undefined
 Behaviour carried over from aurelia-binding.
 
 ```javascript
+// +/- behaviour in normal JavaScript expression
 undefined + 1 // => NaN
 1 + undefined // => NaN
 null + 1 // => 1
@@ -155,7 +156,7 @@ evaluate('null + null'); // => 0
 ### no function expression
 
 ```javascript
-// all would not work in bcx-expression
+// all following JavaScript expressions would not work in bcx-expression
 (function(){return 1})()
 (() => 1)()
 arr.sort((a, b) => a > b)
@@ -165,10 +166,17 @@ arr.sort(aHelperFunc)
 ```
 
 ### no regular expression support
+Regex syntax is too complex to be supported for our AST (abstract syntax tree).
 
 ```javascript
-// this would not work in bcx-expression
+// regex literal would not work in bcx-expression.
 /\w/.test(string)
+```
+
+One way to bypass this is to supply regex literal in helper object.
+
+```javascript
+evaluate('tester.test(str)', {str: '%'}, {tester: /\w/});
 ```
 
 ### some JavaScript operators would not work
