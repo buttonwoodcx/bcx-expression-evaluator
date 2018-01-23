@@ -4,13 +4,11 @@ import uglify from 'rollup-plugin-uglify';
 
 export default {
   input: 'src/index.js',
-  name: 'BcxExpressionEvaluator',
   output: {
     format: 'umd',
+    name: 'BcxExpressionEvaluator',
     file: 'dist/index.js',
   },
-  external: [],
-  globals: {},
   plugins: [
     resolve(),
     babel({
