@@ -27,6 +27,7 @@
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-node-resolve": "^3.0.2",
     "rollup-plugin-uglify": "^3.0.0",
+    "standard-changelog": "^1.0.12",
     "tape": "^4.8.0"
   },
   "scripts": {
@@ -34,6 +35,7 @@
     "lint": "eslint src",
     "prepare": "npm run build",
     "preversion": "npm test",
+    "version": "standard-changelog && git add CHANGELOG.md",
     "postversion": "git push && git push --tags",
     "pretest": "npm run lint",
     "test": "env BABEL_ENV=test tape -r babel-register 'test/**/*.spec.js'"
