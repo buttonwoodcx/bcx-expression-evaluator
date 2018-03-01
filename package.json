@@ -36,7 +36,7 @@
     "prepare": "npm run build",
     "preversion": "npm test",
     "version": "standard-changelog && git add CHANGELOG.md",
-    "postversion": "git push && git push --tags",
+    "postversion": "git push && git push --tags && npm publish",
     "pretest": "npm run lint",
     "test": "env BABEL_ENV=test tape -r babel-register 'test/**/*.spec.js'"
   },
