@@ -1,3 +1,13 @@
+<a name="0.3.4"></a>
+## [0.3.4](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v0.3.3...v0.3.4) (2018-03-08)
+
+
+### Bug Fixes
+
+* fix BABEL_ENV to development to fix npm installation directly from git. ([66949e3](https://github.com/buttonwoodcx/bcx-expression-evaluator/commit/66949e3))
+
+
+
 <a name="0.3.3"></a>
 ## [0.3.3](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v0.3.2...v0.3.3) (2017-08-16)
 
