@@ -1,12 +1,11 @@
 {
   "env": {
     "test": {
-      "presets": ["env"]
+      "presets": ["env", "stage-1"]
     },
     "development": {
-      "presets": [["env", {"modules": false}]],
+      "presets": [["env", {"modules": false}], "stage-1"],
       "plugins": ["external-helpers"]
     }
-  },
-  "presets": ["stage-1"]
+  }
 }
