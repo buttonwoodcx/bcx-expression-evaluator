@@ -1,3 +1,13 @@
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v0.3.4...v0.4.0) (2018-08-25)
+
+
+### Features
+
+* use babel loose mode for faster/smaller code ([e6926de](https://github.com/buttonwoodcx/bcx-expression-evaluator/commit/e6926de))
+
+
+
 <a name="0.3.4"></a>
 ## [0.3.4](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v0.3.3...v0.3.4) (2018-03-08)
 
