@@ -1,11 +1,10 @@
 {
   "env": {
     "test": {
-      "presets": [["env", {"loose": true}], "stage-1"]
+      "presets": [["@babel/preset-env", {"loose": true}]]
     },
     "development": {
-      "presets": [["env", {"loose": true, "modules": false}], "stage-1"],
-      "plugins": ["external-helpers"]
+      "presets": [["@babel/preset-env", {"loose": true, "modules": false}]]
     }
   }
 }
