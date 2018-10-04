@@ -1,3 +1,8 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v0.4.0...v1.0.0) (2018-10-04)
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v0.3.4...v0.4.0) (2018-08-25)
 
