@@ -344,7 +344,6 @@ export class Scanner {
   }
 
   scanStartOfInterpolation() {
-    assert(this.context === CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION);
     assert(this.isStartOfInterpolation());
     let start = this.index;
     this.advance();
@@ -368,7 +367,9 @@ export class Scanner {
   }
 
   isStartOfInterpolation() {
-    return this.peek === $$ && this.input.charCodeAt(this.index + 1) === $LBRACE;
+    if (this.context === CONTEXT_TEXT_PART_OF_STRING_INTERPOLATION) {
+      return this.peek === $$ && this.input.charCodeAt(this.index + 1) === $LBRACE;
+    }
   }
 }
 

@@ -71,10 +71,16 @@ test('evaluate: can reject assignment', t => {
   t.end();
 });
 
-test('evaluate: can evaluate string interpolation with or without backtick', t => {
+test('evaluate: can evaluate string interpolation with or without back-tick', t => {
   t.equal(evaluate('`${a+1}`', {a:1}), '2');
   t.equal(evaluate('${a+1}', {a:1}, null, {stringInterpolationMode: true}), '2');
   t.equal(evaluateStringInterpolation('${a+1}', {a:1}), '2');
   t.end();
 });
 
+test('evaluate: handles false string interpolation without back-tick', t => {
+  // The same expression in two mode. This also makes sure they use different cache.
+  t.equal(evaluate('"${a+1}"', {a:1}), '${a+1}');
+  t.equal(evaluateStringInterpolation('"${a+1}"', {a:1}), '"2"');
+  t.end();
+});

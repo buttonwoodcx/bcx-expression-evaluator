@@ -23,6 +23,8 @@ let parser = new Parser();
 test('Parser: parses literal primitives', t => {
   // http://es5.github.io/x7.html#x7.8.4
   let tests = [
+    { expression: '\'${a}\'', value: '${a}', type: LiteralString },
+    { expression: '"${a+1}"', value: '${a+1}', type: LiteralString },
     { expression: '\'foo\'', value: 'foo', type: LiteralString },
     { expression: '\'\\\\\'', value: '\\', type: LiteralString },
     { expression: '\'\\\'\'', value: '\'', type: LiteralString },
@@ -301,6 +303,9 @@ test('Parser: parses StringInterpolation in pure string interpolation mode', t =
   t.equal(parser.parse('$\\{2+2}', opts).evaluate(), '${2+2}');
   t.equal(parser.parse('${1+1}$', opts).evaluate(), '2$');
   t.equal(parser.parse('${1+1} $ {', opts).evaluate(), '2 $ {');
+
+  t.equal(parser.parse('"${1+1}"', opts).evaluate(), '"2"');
+  t.equal(parser.parse('\'${1+1}\'', opts).evaluate(), "'2'");
 
   t.throws(() => parser.parse('${1+1+`}', opts));
   t.throws(() => parser.parse('${1+1\\}', opts));
