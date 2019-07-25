@@ -24,7 +24,8 @@
   },
   "rules": {
     "semi": [2, "always"],
-    "no-undef": 2
+    "no-undef": 2,
+    "no-prototype-builtins": 0
   },
   "env": {
     "es6": true,
