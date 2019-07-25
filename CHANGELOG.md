@@ -1,3 +1,13 @@
+## [1.0.1](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v1.0.0...v1.0.1) (2019-07-25)
+
+
+### Bug Fixes
+
+* fix cache collision for same expression but in two modes ([c98154e](https://github.com/buttonwoodcx/bcx-expression-evaluator/commit/c98154e))
+* fix detection of start of string interpolation ([56f0aca](https://github.com/buttonwoodcx/bcx-expression-evaluator/commit/56f0aca)), closes [#4](https://github.com/buttonwoodcx/bcx-expression-evaluator/issues/4)
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v0.4.0...v1.0.0) (2018-10-04)
 
