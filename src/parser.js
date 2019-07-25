@@ -19,21 +19,23 @@ export class Parser {
   parse(input, opts = {}) {
     input = input || '';
 
-    if (!this.cache[input]) {
+    const hashKey = input + ':' + JSON.stringify(opts);
+
+    if (!this.cache[hashKey]) {
       const parserImp = new ParserImplementation(this.lexer, input, opts);
-      this.cache[input] = parserImp.parseExpression();
+      this.cache[hashKey] = parserImp.parseExpression();
 
       let exp = '';
       for (let i = 0, length = parserImp.tokens.length; i < length; ++i) {
         exp += parserImp.tokens[i].text;
       }
 
-      this.cache[input].toString = function() {
+      this.cache[hashKey].toString = function() {
         return exp;
       };
     }
 
-    return this.cache[input];
+    return this.cache[hashKey];
   }
 }
 
