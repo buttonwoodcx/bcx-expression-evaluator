@@ -281,7 +281,9 @@ export class Binary extends Expression {
       // no default
       }
 
-      return null;
+      // "Fix" an original aurelia-binding behaviour, let other operators
+      // to do their JS behaviour.
+      // return null;
     }
 
     switch (this.operation) {
