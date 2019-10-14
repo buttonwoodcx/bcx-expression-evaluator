@@ -47,3 +47,55 @@ test('AST:Binary: adds numbers', t => {
   t.equal(expression.evaluate(scope), 2);
   t.end();
 });
+
+test('AST:Binary: other operators same as JS', t => {
+  let expression = new Binary('>', new LiteralPrimitive(3), new LiteralPrimitive(2));
+  let scope = createSimpleScope({});
+  t.equal(expression.evaluate(scope), true);
+
+  expression = new Binary('<', new LiteralPrimitive(3), new LiteralPrimitive(2));
+  t.equal(expression.evaluate(scope), false);
+
+  expression = new Binary('<=', new LiteralPrimitive(2), new LiteralPrimitive(2));
+  t.equal(expression.evaluate(scope), true);
+
+  expression = new Binary('^', new LiteralPrimitive(2), new LiteralPrimitive(1));
+  t.equal(expression.evaluate(scope), 3);
+
+  expression = new Binary('^', new LiteralPrimitive(2), new LiteralPrimitive(3));
+  t.equal(expression.evaluate(scope), 1);
+
+  expression = new Binary('&', new LiteralPrimitive(2), new LiteralPrimitive(1));
+  t.equal(expression.evaluate(scope), 0);
+
+  expression = new Binary('|', new LiteralPrimitive(2), new LiteralPrimitive(1));
+  t.equal(expression.evaluate(scope), 3);
+
+  expression = new Binary('|', new LiteralPrimitive(2), new LiteralPrimitive(3));
+  t.equal(expression.evaluate(scope), 3);
+
+  expression = new Binary('<<', new LiteralPrimitive(2), new LiteralPrimitive(1));
+  t.equal(expression.evaluate(scope), 4);
+
+  expression = new Binary('>>', new LiteralPrimitive(2), new LiteralPrimitive(1));
+  t.equal(expression.evaluate(scope), 1);
+
+  expression = new Binary('>>>', new LiteralPrimitive(2), new LiteralPrimitive(1));
+  t.equal(expression.evaluate(scope), 1);
+
+  expression = new Binary('>=', new LiteralPrimitive(null), new LiteralPrimitive(0));
+  t.equal(expression.evaluate(scope), true);
+
+  expression = new Binary('>=', new LiteralPrimitive(null), new LiteralPrimitive(1));
+  t.equal(expression.evaluate(scope), false);
+
+  expression = new Binary('*', new LiteralPrimitive(2), new LiteralPrimitive(3));
+  t.equal(expression.evaluate(scope), 6);
+
+  expression = new Binary('/', new LiteralPrimitive(6), new LiteralPrimitive(3));
+  t.equal(expression.evaluate(scope), 2);
+
+  expression = new Binary('%', new LiteralPrimitive(7), new LiteralPrimitive(3));
+  t.equal(expression.evaluate(scope), 1);
+  t.end();
+});
