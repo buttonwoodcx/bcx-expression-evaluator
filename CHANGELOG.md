@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v1.0.1...v1.1.0) (2019-10-14)
+
+
+### Bug Fixes
+
+* restore original JS behaviour on other operators like >= ([ef6d088](https://github.com/buttonwoodcx/bcx-expression-evaluator/commit/ef6d088d70da87f8cb598ac5be99b1f77fef3be2)), closes [#5](https://github.com/buttonwoodcx/bcx-expression-evaluator/issues/5)
+
+
+### Features
+
+* support bitwise binary operators & | << >> >>> ([a5c303f](https://github.com/buttonwoodcx/bcx-expression-evaluator/commit/a5c303f19be73cebe8dd19435a30ca2d56801e47))
+
+
+
 ## [1.0.1](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v1.0.0...v1.0.1) (2019-07-25)
 
 
