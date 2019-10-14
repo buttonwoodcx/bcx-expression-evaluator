@@ -8,7 +8,7 @@ This tool was mainly extracted, modified and extended from the expression parser
 
 ## Install
 
-    npm install --save bcx-expression-evaluator
+    npm install bcx-expression-evaluator
 
 ## Document
 
