@@ -18,16 +18,16 @@
   "license": "MIT",
   "author": "Chunpeng Huo",
   "devDependencies": {
-    "@babel/core": "^7.7.4",
-    "@babel/preset-env": "^7.7.4",
-    "@babel/register": "^7.7.4",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/register": "^7.8.3",
     "babel-eslint": "^10.0.3",
-    "eslint": "^6.7.2",
-    "rollup": "^1.27.8",
+    "eslint": "^6.8.0",
+    "rollup": "^1.31.1",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-terser": "^5.1.2",
-    "standard-changelog": "^2.0.18",
-    "tape": "^4.11.0"
+    "rollup-plugin-terser": "^5.2.0",
+    "standard-changelog": "^2.0.21",
+    "tape": "^4.13.0"
   },
   "scripts": {
     "build": "env BABEL_ENV=development rollup -c",
