@@ -1,3 +1,12 @@
+# [1.2.0](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v1.1.0...v1.2.0) (2020-05-12)
+
+
+### Features
+
+* migrate from rollup to ncc ([5c46238](https://github.com/buttonwoodcx/bcx-expression-evaluator/commit/5c4623894c56e856217933234a1af19c724bb96f))
+
+
+
 # [1.1.0](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v1.0.1...v1.1.0) (2019-10-14)
 
 
