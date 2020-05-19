@@ -21,14 +21,16 @@
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
     "@babel/register": "^7.9.0",
-    "@zeit/ncc": "^0.22.1",
+    "@babel/cli": "^7.8.4",
+    "@zeit/ncc": "^0.22.2",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.0.0",
     "standard-changelog": "^2.0.24",
     "tape": "^5.0.0"
   },
   "scripts": {
-    "build": "ncc build src/index.js -m",
+    "prebuild": "ncc build src/index.js -m -o packed",
+    "build": "babel packed/index.js -o dist/index.js",
     "lint": "eslint src",
     "prepare": "npm run build",
     "preversion": "npm test",

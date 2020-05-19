@@ -5,7 +5,8 @@ npm-debug.*
 /package-lock.json
 /pnpm-lock.yaml
 
-dist/
+/dist
+/packed
 
 # Mac OS X
 .DS_Store
