@@ -1,3 +1,12 @@
+## [1.2.1](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v1.2.0...v1.2.1) (2020-05-19)
+
+
+### Bug Fixes
+
+* babel after ncc to support es5 ([a712944](https://github.com/buttonwoodcx/bcx-expression-evaluator/commit/a712944a3891cf8a79d3b9a86f509868f7127240))
+
+
+
 # [1.2.0](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v1.1.0...v1.2.0) (2020-05-12)
 
 
