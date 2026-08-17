@@ -84,3 +84,67 @@ test('evaluate: handles false string interpolation without back-tick', t => {
   t.equal(evaluateStringInterpolation('"${a+1}"', {a:1}), '"2"');
   t.end();
 });
+
+test('evaluate: cannot access __proto__', t => {
+  const obj = {a: {}};
+  t.throws(() => evaluate('__proto__', obj), /Accessing __proto__ is disallowed for security reasons/);
+  t.throws(() => evaluate('__proto__.polluted', obj), /Accessing __proto__ is disallowed for security reasons/);
+  t.throws(() => evaluate('__proto__.constructor', obj), /Accessing __proto__ is disallowed for security reasons/);
+  t.throws(() => evaluate('__proto__.prototype', obj), /Accessing __proto__ is disallowed for security reasons/);
+  t.throws(() => evaluate('a.__proto__', obj), /Accessing __proto__ is disallowed for security reasons/);
+  t.throws(() => evaluate('a.__proto__.polluted', obj), /Accessing __proto__ is disallowed for security reasons/);
+  t.throws(() => evaluate('a.__proto__.constructor', obj), /Accessing __proto__ is disallowed for security reasons/);
+  t.end();
+});
+
+test('evaluate: cannot populate __proto__', t => {
+  const obj = {a: {}};
+  t.throws(() => evaluate('__proto__ = {polluted: true}', obj), /Accessing __proto__ is disallowed for security reasons/);
+  t.throws(() => evaluate('__proto__.polluted = true', obj), /Accessing __proto__ is disallowed for security reasons/);
+  t.throws(() => evaluate('a.__proto__.polluted = true', obj), /Accessing __proto__ is disallowed for security reasons/);
+  t.equal(obj.__proto__.polluted, undefined);
+  t.end();
+});
+
+test('evaluate: cannot access constructor', t => {
+  const obj = {a: {}};
+  t.throws(() => evaluate('constructor', obj), /Accessing constructor is disallowed for security reasons/);
+  t.throws(() => evaluate('constructor.prototype', obj), /Accessing constructor is disallowed for security reasons/);
+  t.throws(() => evaluate('a.constructor.prototype', obj), /Accessing constructor is disallowed for security reasons/);
+  t.end();
+});
+
+test('evaluate: cannot populate constructor', t => {
+  const obj = {};
+  t.throws(() => evaluate('constructor = {polluted: true}', obj), /Accessing constructor is disallowed for security reasons/);
+  t.equal(obj.polluted, undefined);
+  t.equal(Object.prototype.polluted, undefined);
+
+  t.throws(() =>evaluate('constructor.prototype.polluted = true', obj), /Accessing constructor is disallowed for security reasons/);
+  t.equal(obj.constructor.prototype.polluted, undefined);
+  t.equal(Object.prototype.polluted, undefined);
+  t.end();
+});
+
+test('evaluate: cannot access prototype', t => {
+  const obj = function () {};
+  t.throws(() => evaluate('prototype', obj), /Accessing prototype is disallowed for security reasons/);
+  t.throws(() => evaluate('prototype.constructor', obj), /Accessing prototype is disallowed for security reasons/);
+  t.throws(() => evaluate('prototype.prototype', obj), /Accessing prototype is disallowed for security reasons/);
+  t.throws(() => evaluate('a.b.prototype.constructor', obj), /Accessing prototype is disallowed for security reasons/);
+  t.end();
+});
+
+test('evaluate: cannot populate prototype', t => {
+  const obj = function () {};
+  t.throws(() => evaluate('prototype = {polluted: true}', obj), /Accessing prototype is disallowed for security reasons/);
+  let instance = new obj();
+  t.equal(instance.polluted, undefined);
+  t.equal(instance.__proto__.polluted, undefined);
+
+  t.throws(() => evaluate('prototype.polluted = true', obj), /Accessing prototype is disallowed for security reasons/);
+  instance = new obj();
+  t.equal(instance.polluted, undefined);
+  t.equal(instance.__proto__.polluted, undefined);
+  t.end();
+});

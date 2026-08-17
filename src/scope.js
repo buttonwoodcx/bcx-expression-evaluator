@@ -9,9 +9,12 @@
 //   overrideContext: OverrideContext;
 // }
 
-function has(obj, name) {
+export function has(obj, name) {
   const type = typeof obj;
-  return (type === 'object' || type === 'function') && (name in obj);
+  if (type === 'object' || type === 'function') {
+    return name in obj && name !== '__proto__' && name !== 'constructor' && name !== 'prototype';
+  }
+  return false;
 }
 
 export function createOverrideContext(bindingContext, parentOverrideContext) {

@@ -1,5 +1,5 @@
 import {Unparser} from './unparser';
-import {getContextFor, createSimpleScope} from './scope';
+import {has, getContextFor, createSimpleScope} from './scope';
 
 export class Expression {
   constructor() {
@@ -90,6 +90,10 @@ export class AccessScope extends Expression {
   constructor(name, ancestor) {
     super();
 
+    if (name === '__proto__' || name === 'constructor' || name === 'prototype') {
+      throw new Error(`Accessing ${name} is disallowed for security reasons.`);
+    }
+
     this.name = name;
     this.ancestor = ancestor;
     this.isAssignable = true;
@@ -97,7 +101,10 @@ export class AccessScope extends Expression {
 
   evaluate(scope) {
     let context = getContextFor(this.name, scope, this.ancestor);
-    return context[this.name];
+    if (has(context, this.name)) {
+      return context[this.name];
+    }
+    return undefined;
   }
 
   assign(scope, value) {
@@ -114,14 +121,25 @@ export class AccessMember extends Expression {
   constructor(object, name) {
     super();
 
+    if (name === '__proto__' || name === 'constructor' || name === 'prototype') {
+      throw new Error(`Accessing ${name} is disallowed for security reasons.`);
+    }
+
     this.object = object;
     this.name = name;
     this.isAssignable = true;
   }
 
   evaluate(scope) {
+    console.log('AccessMember evaluate', this.object, this.name);
     let instance = this.object.evaluate(scope);
-    return instance === null || instance === undefined ? instance : instance[this.name];
+    if (instance === null || instance === undefined) {
+      return instance;
+    }
+    if (has(instance, this.name)) {
+      return instance[this.name];
+    }
+    return undefined;
   }
 
   assign(scope, value) {
