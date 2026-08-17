@@ -1,3 +1,9 @@
+## [1.2.2](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v1.2.1...v1.2.2) (2026-08-17)
+
+### Bug Fixes
+
+* address a security issue for expression to pollute prototype ([252d33a](https://github.com/buttonwoodcx/bcx-expression-evaluator/commit/252d33ae87643977242b6769adc17f1d06ccfecb))
+
 ## [1.2.1](https://github.com/buttonwoodcx/bcx-expression-evaluator/compare/v1.2.0...v1.2.1) (2020-05-19)
 
 
